@@ -12,7 +12,8 @@ library(riem)
 library(httr)
 library(sf)
 library(gganimate)
-
+library(gifski)
+library(png)
 ```
 
 
