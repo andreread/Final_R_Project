@@ -12,8 +12,9 @@ library(riem)
 library(httr)
 ```
 ```{r}
-
-raw_data <- GET("https://api.covidactnow.org/v2/states.csv?apiKey=a13da1a6818345c697cc89ea4554529a")
+raw_url <- "https://api.covidactnow.org/v2/states.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
+raw_data <- read_csv(file = raw_url)
+raw_data
 
 ```
 
