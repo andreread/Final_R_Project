@@ -51,8 +51,7 @@ h_plot <- h_raw_data %>%
 ```{r}
 h_anim <- h_plot +
   transition_time(date)+
-  labs(title = "Date: {frame_time}")+
-  view_follow(fixed_y = TRUE)
+  labs(title = "Date: {frame_time}")
 
 h_anim
   
