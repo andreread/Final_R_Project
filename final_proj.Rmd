@@ -36,23 +36,22 @@ h_plot_hide <- h_raw_data %>%
 ```
 
 ```{r}
-h_plot <- h_raw_data %>% 
+h_anim_plot <- h_raw_data %>% 
    mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
   select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
-  mutate(year = str_sub(date, 1, 4)) %>% 
-  ggplot(aes(day_vaccine, actuals.newCases, fill = state, color = state))+
-  geom_point()
+  mutate(year = str_sub(date, 1, 4))
+ 
 ```
 
 
 ```{r}
-h_anim <- h_plot +
+h_anim_plot %>% 
+  ggplot(aes(day_vaccine, actuals.newCases, fill = state, color = state))+
+  geom_point()+
   transition_time(date)+
   labs(title = "Date: {frame_time}")
-
-h_anim
   
 ```
 
