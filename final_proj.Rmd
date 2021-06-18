@@ -25,8 +25,7 @@ h_raw_data %>%
   filter(state == "AK") %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
-  ggplot(aes(x = date, y = actuals.newCases))+
-  geom_density()
+  ggplot()
 
   
 ```
