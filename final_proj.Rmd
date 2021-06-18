@@ -1,0 +1,19 @@
+---
+title: "Final_Proj"
+author: "Andre"
+date: "17/06/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(riem)
+library(httr)
+```
+```{r}
+
+raw_data <- GET("https://api.covidactnow.org/v2/states.csv?apiKey=a13da1a6818345c697cc89ea4554529a")
+
+```
+
