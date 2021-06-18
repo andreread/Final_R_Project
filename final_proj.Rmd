@@ -42,17 +42,17 @@ h_plot <- h_raw_data %>%
   select(date, state, actuals.newCases, actuals.vaccinesAdministered) %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
-  ggplot(aes(actuals.newCases, fill = state, color = state))+
-  geom_bar()+
-  theme(legend.position = "none")
+  mutate(year = str_sub(date, 1, 4)) %>% 
+  ggplot(aes(actuals.vaccinesAdministered, actuals.newCases, fill = state, color = state))+
+  geom_point()
 ```
 
 
 ```{r}
 h_anim <- h_plot +
-  transition_states(date,
-                    transition_length = 2,
-                    state_length = 1)
+  transition_time(date)+
+  labs(title = "Date: {frame_time}")+
+  view_follow(fixed_y = TRUE)
 
 h_anim
   
