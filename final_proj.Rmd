@@ -14,22 +14,20 @@ library(sf)
 library(gganimate)
 library(gifski)
 library(png)
+library(dplyr)
 ```
 
 
 ```{r}
-c_raw_url <- "https://api.covidactnow.org/v2/states.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
-c_raw_data <- read_csv(file = c_raw_url)
-
 h_raw_url <- "https://api.covidactnow.org/v2/states.timeseries.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
 h_raw_data <- read_csv(file = h_raw_url)
-
 ```
 
 
 ```{r}
 h_plot_hide <- h_raw_data %>% 
-  select(date, state, actuals.newCases, actuals.vaccinesAdministered) %>% 
+   mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
+  select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
   ggplot(aes(date, actuals.newCases, fill = state, color = state))+
@@ -39,11 +37,12 @@ h_plot_hide <- h_raw_data %>%
 
 ```{r}
 h_plot <- h_raw_data %>% 
-  select(date, state, actuals.newCases, actuals.vaccinesAdministered) %>% 
+   mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
+  select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
   mutate(year = str_sub(date, 1, 4)) %>% 
-  ggplot(aes(actuals.vaccinesAdministered, actuals.newCases, fill = state, color = state))+
+  ggplot(aes(day_vaccine, actuals.newCases, fill = state, color = state))+
   geom_point()
 ```
 
