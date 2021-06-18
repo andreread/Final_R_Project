@@ -10,11 +10,24 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(riem)
 library(httr)
+library(sf)
+
 ```
 ```{r}
-raw_url <- "https://api.covidactnow.org/v2/states.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
-raw_data <- read_csv(file = raw_url)
-raw_data
+c_raw_url <- "https://api.covidactnow.org/v2/states.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
+c_raw_data <- read_csv(file = c_raw_url)
+c_raw_data
 
+h_raw_url <- "https://api.covidactnow.org/v2/states.timeseries.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
+h_raw_data <- read_csv(file = h_raw_url)
+h_raw_data %>% 
+  select(date, state, actuals.newCases, actuals.vaccinesAdministered) %>% 
+  filter(state == "AK") %>% 
+  filter(actuals.newCases != 0) %>% 
+  drop_na() %>% 
+  ggplot(aes(x = date, y = actuals.newCases))+
+  geom_density()
+
+  
 ```
 
