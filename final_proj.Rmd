@@ -14,21 +14,46 @@ library(sf)
 library(gganimate)
 
 ```
+
+
 ```{r}
 c_raw_url <- "https://api.covidactnow.org/v2/states.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
 c_raw_data <- read_csv(file = c_raw_url)
-c_raw_data
 
 h_raw_url <- "https://api.covidactnow.org/v2/states.timeseries.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
 h_raw_data <- read_csv(file = h_raw_url)
-h_raw_data %>% 
+
+```
+
+
+```{r}
+h_plot_hide <- h_raw_data %>% 
   select(date, state, actuals.newCases, actuals.vaccinesAdministered) %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
   ggplot(aes(date, actuals.newCases, fill = state, color = state))+
   geom_smooth(formula = y ~ x, method = loess, se = FALSE)+
   theme(legend.position = "none")
+```
 
+```{r}
+h_plot <- h_raw_data %>% 
+  select(date, state, actuals.newCases, actuals.vaccinesAdministered) %>% 
+  filter(actuals.newCases != 0) %>% 
+  drop_na() %>% 
+  ggplot(aes(actuals.newCases, fill = state, color = state))+
+  geom_bar()+
+  theme(legend.position = "none")
+```
+
+
+```{r}
+h_anim <- h_plot +
+  transition_states(date,
+                    transition_length = 2,
+                    state_length = 1)
+
+h_anim
   
 ```
 
