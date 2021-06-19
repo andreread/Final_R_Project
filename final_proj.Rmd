@@ -15,18 +15,19 @@ library(gganimate)
 library(gifski)
 library(png)
 library(dplyr)
+library(patchwork)
 ```
 
 
-```{r}
+```{r Api setup}
 h_raw_url <- "https://api.covidactnow.org/v2/states.timeseries.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
 h_raw_data <- read_csv(file = h_raw_url)
 ```
 
 
-```{r}
+```{r line of all 50 states}
 h_raw_data %>% 
-   mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
+  mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
   select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
@@ -35,19 +36,19 @@ h_raw_data %>%
   theme(legend.position = "none")
 ```
 
-```{r}
+```{r animation (data)}
 h_anim_plot <- h_raw_data %>% 
    mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
   select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
-  mutate(year = str_sub(date, 1, 4))+
+  mutate(year = str_sub(date, 1, 4))
   
  
 ```
 
 
-```{r}
+```{r animation (animation)}
 h_anim_plot %>% 
   ggplot(aes(day_vaccine, actuals.newCases, fill = state, color = state))+
   geom_point()+
@@ -55,5 +56,29 @@ h_anim_plot %>%
   labs(title = "Date: {frame_time}")+
   theme(legend.position = "none")
   
+```
+
+```{r Comparison of case density to vaccination ratio (state)}
+test_data <- h_raw_data %>% 
+  mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
+  select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine, metrics.caseDensity, metrics.vaccinationsInitiatedRatio) %>%   filter(actuals.newCases != 0) %>% 
+  filter(state == "AK") %>% 
+  drop_na()
+  
+
+
+p1 <- test_data %>% 
+  ggplot(aes(date, metrics.caseDensity))+
+  geom_smooth(formula = y ~ x, method = loess, se = FALSE)
+
+p2 <- test_data %>% 
+  ggplot(aes(date, metrics.vaccinationsInitiatedRatio))+
+  geom_smooth(formula = y ~ x, method = loess, se = FALSE)
+
+p1 + p2
+```
+
+```{r attempting to combine all 50 states}
+
 ```
 
