@@ -58,34 +58,25 @@ h_anim_plot %>%
   
 ```
 
-```{r Comparison of case density to vaccination ratio (state)}
-test_data <- h_raw_data %>% 
-  mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
-  select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine, metrics.caseDensity, metrics.vaccinationsInitiatedRatio) %>%   filter(actuals.newCases != 0) %>% 
-  filter(state == "AK") %>% 
-  drop_na()
-  
 
+```{r Comparison of case density to vaccination ratio (country)}
+h_raw_data[is.na(h_raw_data)] <- 0
 
-p1 <- test_data %>% 
-  ggplot(aes(date, metrics.caseDensity))+
+p1 <- h_raw_data %>% 
+  select(date, metrics.caseDensity, state) %>% 
+  group_by(date) %>% 
+  summarize(total_density = sum(metrics.caseDensity)) %>% 
+  ggplot(aes(date, total_density))+
   geom_smooth(formula = y ~ x, method = loess, se = FALSE)
 
-p2 <- test_data %>% 
-  ggplot(aes(date, metrics.vaccinationsInitiatedRatio))+
+p2 <- h_raw_data %>% 
+  select(date, metrics.vaccinationsInitiatedRatio, state) %>% 
+  group_by(date) %>% 
+  summarize(total_vacc_initiated = sum(metrics.vaccinationsInitiatedRatio)) %>% 
+  ggplot(aes(date, total_vacc_initiated))+
   geom_smooth(formula = y ~ x, method = loess, se = FALSE)
 
 p1 + p2
-```
-
-```{r attempting to combine all 50 states}
-h_raw_data[is.na(h_raw_data)] <- 0
-
-h_raw_data %>% 
-  select(date, actuals.cases) %>% 
-  mutate(sum_states = ifelse(date == "2020-03-12", NA )) 
-
-sum(actuals.cases)
-
+  
 ```
 
