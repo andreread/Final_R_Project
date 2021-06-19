@@ -38,7 +38,7 @@ h_raw_data %>%
 
 ```{r animation (data)}
 h_anim_plot <- h_raw_data %>% 
-   mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
+  mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
   select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
   filter(actuals.newCases != 0) %>% 
   drop_na() %>% 
@@ -60,23 +60,26 @@ h_anim_plot %>%
 
 
 ```{r Comparison of case density to vaccination ratio (country)}
-h_raw_data[is.na(h_raw_data)] <- 0
+nais0_raw_data <- h_raw_data
+nais0_raw_data[is.na(nais0_raw_data)] <- 0
 
-p1 <- h_raw_data %>% 
-  select(date, metrics.caseDensity, state) %>% 
+p1 <- nais0_raw_data %>% 
+  select(date, actuals.newCases, state) %>% 
   group_by(date) %>% 
-  summarize(total_density = sum(metrics.caseDensity)) %>% 
-  ggplot(aes(date, total_density))+
+  summarize(sum_new_cases = sum(actuals.newCases)) %>% 
+  ggplot(aes(date, sum_new_cases))+
   geom_smooth(formula = y ~ x, method = loess, se = FALSE)
 
-p2 <- h_raw_data %>% 
-  select(date, metrics.vaccinationsInitiatedRatio, state) %>% 
+p2 <- nais0_raw_data %>% 
+  select(date, actuals.vaccinesAdministered, state) %>% 
+  mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>% 
   group_by(date) %>% 
-  summarize(total_vacc_initiated = sum(metrics.vaccinationsInitiatedRatio)) %>% 
-  ggplot(aes(date, total_vacc_initiated))+
+  summarize(total_vacc_given = sum(day_vaccine)) %>% 
+  ggplot(aes(date, total_vacc_given))+
   geom_smooth(formula = y ~ x, method = loess, se = FALSE)
 
 p1 + p2
-  
+#issue here is when subtracting from previous day if the day is 0, the data turns negative, this is occurring in both graphs
+#look into why both graphs go into negatives and why the new cases one does not look like internet ones
 ```
 
