@@ -79,6 +79,13 @@ p1 + p2
 ```
 
 ```{r attempting to combine all 50 states}
+h_raw_data[is.na(h_raw_data)] <- 0
+
+h_raw_data %>% 
+  select(date, actuals.cases) %>% 
+  mutate(sum_states = ifelse(date == "2020-03-12", NA )) 
+
+sum(actuals.cases)
 
 ```
 
