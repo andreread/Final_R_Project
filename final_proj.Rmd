@@ -16,6 +16,7 @@ library(gifski)
 library(png)
 library(dplyr)
 library(patchwork)
+library(ggthemes)
 ```
 
 
@@ -47,14 +48,21 @@ h_anim_plot <- h_raw_data %>%
  
 ```
 
-
 ```{r animation (animation)}
 h_anim_plot %>% 
   ggplot(aes(day_vaccine, actuals.newCases, fill = state, color = state))+
   geom_point()+
   transition_time(date)+
-  labs(title = "Date: {frame_time}")+
-  theme(legend.position = "none")
+  scale_x_continuous(labels = function(day_vaccine) format(day_vaccine, scientific = FALSE))+
+  theme_minimal()+
+  theme(legend.position = "none")+
+  labs( title = "The relationship between new Covid cases and vaccination rates in the US",
+        subtitle = "As the vaccinations rates increase, the daily case counts decrease",
+        x = "Daily vaccination count",
+        y = "Daily new case count",
+        caption = "Covidactnow")+
+  labs(title = "Date: {frame_time}")
+
   
 ```
 
