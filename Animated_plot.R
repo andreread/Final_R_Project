@@ -40,7 +40,7 @@ anim_plot <- h_anim_plot %>%
 
 
 write_rds(anim_plot, "anim_plot.rds")
-
+anim_plot
 
 
 #add average line for all states combined??? 
