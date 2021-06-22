@@ -1,0 +1,21 @@
+---
+title: "The relationship between Covid cases and vaccination rates in the US"
+description: |
+  Andre's Final Proj
+site: distill::distill_website
+---
+
+```{r setup, include=FALSE}
+library(distill)
+knitr::opts_chunk$set(echo = FALSE)
+
+# Learn more about creating websites with Distill at:
+# https://rstudio.github.io/distill/website.html
+
+# Learn more about publishing to GitHub Pages at:
+# https://rstudio.github.io/distill/publish_website.html#github-pages
+
+anim_plot <- read_rds("anim_plot.rds")
+anim_plot
+```
+

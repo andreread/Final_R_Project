@@ -1,6 +1,6 @@
 ---
-title: "Final_Proj"
-author: "Andre"
+title: "Final_Project"
+author: "Andre Arroyo-Cottier"
 date: "17/06/2021"
 output: html_document
 ---
@@ -17,27 +17,28 @@ library(png)
 library(dplyr)
 library(patchwork)
 library(ggthemes)
+library(distill)
 ```
 
 
-```{r Api setup}
+```{r Api setup, include=FALSE}
 h_raw_url <- "https://api.covidactnow.org/v2/states.timeseries.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
 h_raw_data <- read_csv(file = h_raw_url)
 ```
 
 
 ```{r line of all 50 states}
-h_raw_data %>% 
-  mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
-  select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
-  filter(actuals.newCases != 0) %>% 
-  drop_na() %>% 
-  ggplot(aes(date, actuals.newCases, fill = state, color = state))+
-  geom_smooth(formula = y ~ x, method = loess, se = FALSE)+
-  theme(legend.position = "none")
+# h_raw_data %>% 
+#   mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
+#   select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
+#   filter(actuals.newCases != 0) %>% 
+#   drop_na() %>% 
+#   ggplot(aes(date, actuals.newCases, fill = state, color = state))+
+#   geom_smooth(formula = y ~ x, method = loess, se = FALSE)+
+#   theme(legend.position = "none")
 ```
 
-```{r animation (data)}
+```{r animation (data), include=FALSE}
 h_anim_plot <- h_raw_data %>% 
   mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
   select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %>% 
@@ -63,31 +64,31 @@ h_anim_plot %>%
         caption = "Covidactnow")+
   labs(title = "Date: {frame_time}")
 
-  
+#add average line for all states combined???  
 ```
 
 
 ```{r Comparison of case density to vaccination ratio (country)}
-nais0_raw_data <- h_raw_data
-nais0_raw_data[is.na(nais0_raw_data)] <- 0
-
-p1 <- nais0_raw_data %>% 
-  select(date, actuals.newCases, state) %>% 
-  group_by(date) %>% 
-  summarize(sum_new_cases = sum(actuals.newCases)) %>% 
-  ggplot(aes(date, sum_new_cases))+
-  geom_smooth(formula = y ~ x, method = loess, se = FALSE)
-
-p2 <- nais0_raw_data %>% 
-  select(date, actuals.vaccinesAdministered, state) %>% 
-  mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>% 
-  group_by(date) %>% 
-  summarize(total_vacc_given = sum(day_vaccine)) %>% 
-  ggplot(aes(date, total_vacc_given))+
-  geom_smooth(formula = y ~ x, method = loess, se = FALSE)
-
-p1 + p2
-#issue here is when subtracting from previous day if the day is 0, the data turns negative, this is occurring in both graphs
-#look into why both graphs go into negatives and why the new cases one does not look like internet ones
+# nais0_raw_data <- h_raw_data
+# nais0_raw_data[is.na(nais0_raw_data)] <- 0
+# 
+# p1 <- nais0_raw_data %>% 
+#   select(date, actuals.newCases, state) %>% 
+#   group_by(date) %>% 
+#   summarize(sum_new_cases = sum(actuals.newCases)) %>% 
+#   ggplot(aes(date, sum_new_cases))+
+#   geom_smooth(formula = y ~ x, method = loess, se = FALSE)
+# 
+# p2 <- nais0_raw_data %>% 
+#   select(date, actuals.vaccinesAdministered, state) %>% 
+#   mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>% 
+#   group_by(date) %>% 
+#   summarize(total_vacc_given = sum(day_vaccine)) %>% 
+#   ggplot(aes(date, total_vacc_given))+
+#   geom_smooth(formula = y ~ x, method = loess, se = FALSE)
+# 
+# p1 + p2
+# issue here is when subtracting from previous day if the day is 0, the data turns negative, this is occurring in both graphs
+# look into why both graphs go into negatives and why the new cases one does not look like internet ones
 ```
 
