@@ -1,7 +1,6 @@
 ---
 title: "The relationship between Covid cases and vaccination rates in the US"
-description: |
-  Andre's Final Proj
+description: Andre's final R project
 site: distill::distill_website
 ---
 
