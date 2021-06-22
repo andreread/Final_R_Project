@@ -31,11 +31,10 @@ anim_plot <- h_anim_plot %>%
   theme_minimal()+
   theme(legend.position = "none")+
   labs( title = "The relationship between new Covid cases and vaccination rates in the US",
-        subtitle = "As the vaccinations rates increase, the daily case counts decrease",
         x = "Daily vaccination count",
         y = "Daily new case count",
         caption = "Covidactnow")+
-  labs(title = "Date: {frame_time}")
+  labs(subtitle = "Date: {frame_time}")
 
 
 
