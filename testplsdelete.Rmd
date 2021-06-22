@@ -1,19 +1,11 @@
 ---
-title: "The relationship between Covid cases and vaccination rates in the US"
-description: |
-  Andre's Final Proj
-site: distill::distill_website
+title: "test"
+author: "Andre"
+date: "22/06/2021"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-library(tidyverse)
-library(distill)
-
-
-```
-
-```{r }
 library(tidyverse)
 library(riem)
 library(httr)
@@ -26,6 +18,9 @@ library(patchwork)
 library(ggthemes)
 library(distill)
 
+
+```
+```{r}
 h_raw_url <- "https://api.covidactnow.org/v2/states.timeseries.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
 h_raw_data <- as_tibble(read_csv(h_raw_url))
 
@@ -52,7 +47,6 @@ anim_plot <- h_anim_plot %>%
         y = "Daily new case count",
         caption = "Covidactnow")+
   labs(title = "Date: {frame_time}")
-  
-  anim_plot
+anim_plot
 ```
 

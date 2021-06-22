@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Andre Arroyo-Cottier" />
+<meta name="author" content="Andre" />
 
 
-<title>Final_Project</title>
+<title>test</title>
 
 <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content=""/>
@@ -892,14 +892,56 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Final_Project</h1>
-<h4 class="author">Andre Arroyo-Cottier</h4>
-<h4 class="date">17/06/2021</h4>
+<h1 class="title toc-ignore">test</h1>
+<h4 class="author">Andre</h4>
+<h4 class="date">22/06/2021</h4>
 
 </div>
 
 
-<p><img src="final_proj_files/figure-html/animation%20(animation)-1.gif" /><!-- --></p>
+<pre class="r"><code>h_raw_url &lt;- &quot;https://api.covidactnow.org/v2/states.timeseries.csv?apiKey=a13da1a6818345c697cc89ea4554529a&quot;
+h_raw_data &lt;- as_tibble(read_csv(h_raw_url))</code></pre>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   .default = col_double(),
+##   date = col_date(format = &quot;&quot;),
+##   country = col_character(),
+##   state = col_character(),
+##   county = col_logical(),
+##   fips = col_character(),
+##   lat = col_logical(),
+##   long = col_logical(),
+##   locationId = col_character(),
+##   actuals.hospitalBeds.capacity = col_logical(),
+##   actuals.hospitalBeds.typicalUsageRate = col_logical(),
+##   actuals.icuBeds.typicalUsageRate = col_logical(),
+##   metrics.testPositivityRatioDetails = col_logical(),
+##   metrics.icuHeadroomDetails = col_logical()
+## )
+## i Use `spec()` for the full column specifications.</code></pre>
+<pre class="r"><code>h_anim_plot &lt;- h_raw_data %&gt;% 
+  mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %&gt;%
+  select(date, state, actuals.newCases, actuals.vaccinesAdministered, day_vaccine) %&gt;% 
+  filter(actuals.newCases != 0) %&gt;% 
+  drop_na() %&gt;% 
+  mutate(year = str_sub(date, 1, 4))
+
+anim_plot &lt;- h_anim_plot %&gt;%
+  ggplot(aes(day_vaccine, actuals.newCases, fill = state, color = state))+
+  geom_point()+
+  transition_time(date)+
+  scale_x_continuous(labels = function(day_vaccine) format(day_vaccine, scientific = FALSE))+
+  theme_minimal()+
+  theme(legend.position = &quot;none&quot;)+
+  labs( title = &quot;The relationship between new Covid cases and vaccination rates in the US&quot;,
+        subtitle = &quot;As the vaccinations rates increase, the daily case counts decrease&quot;,
+        x = &quot;Daily vaccination count&quot;,
+        y = &quot;Daily new case count&quot;,
+        caption = &quot;Covidactnow&quot;)+
+  labs(title = &quot;Date: {frame_time}&quot;)
+anim_plot</code></pre>
+<p><img src="testplsdelete_files/figure-html/unnamed-chunk-1-1.gif" /><!-- --></p>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

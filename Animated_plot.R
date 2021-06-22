@@ -11,7 +11,10 @@ library(ggthemes)
 library(distill)
 
 h_raw_url <- "https://api.covidactnow.org/v2/states.timeseries.csv?apiKey=a13da1a6818345c697cc89ea4554529a"
-h_raw_data <- read_csv(file = h_raw_url)
+h_raw_data <- as_tibble(read_csv(h_raw_url))
+
+
+
 
 h_anim_plot <- h_raw_data %>% 
   mutate(day_vaccine = actuals.vaccinesAdministered - lag(actuals.vaccinesAdministered, default = first(actuals.vaccinesAdministered))) %>%
@@ -20,7 +23,7 @@ h_anim_plot <- h_raw_data %>%
   drop_na() %>% 
   mutate(year = str_sub(date, 1, 4))
 
-anim_plot <- h_anim_plot %>% 
+anim_plot <- h_anim_plot %>%
   ggplot(aes(day_vaccine, actuals.newCases, fill = state, color = state))+
   geom_point()+
   transition_time(date)+
@@ -34,6 +37,10 @@ anim_plot <- h_anim_plot %>%
         caption = "Covidactnow")+
   labs(title = "Date: {frame_time}")
 
+
+
 write_rds(anim_plot, "anim_plot.rds")
+
+
 
 #add average line for all states combined??? 

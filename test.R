@@ -1,19 +1,3 @@
----
-title: "The relationship between Covid cases and vaccination rates in the US"
-description: |
-  Andre's Final Proj
-site: distill::distill_website
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-library(tidyverse)
-library(distill)
-
-
-```
-
-```{r }
 library(tidyverse)
 library(riem)
 library(httr)
@@ -52,7 +36,6 @@ anim_plot <- h_anim_plot %>%
         y = "Daily new case count",
         caption = "Covidactnow")+
   labs(title = "Date: {frame_time}")
-  
-  anim_plot
-```
+
+write_rds(h_anim_plot, "test.rds")
 
