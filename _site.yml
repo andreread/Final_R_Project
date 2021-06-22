@@ -1,7 +1,6 @@
 name: "."
 title: "Covid Cases and Vaccination Rates in the US"
-description: |
-  The relationship between Covid cases and vaccination rates in the US
+description: "The relationship between Covid cases and vaccination rates in the US"
 output_dir: "docs"
 navbar:
   right:

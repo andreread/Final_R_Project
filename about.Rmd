@@ -1,7 +1,6 @@
 ---
 title: "About this site"
-description: |
-  Some additional details about the website
+description: "This website was created as part of my final project in Kane's free data science bootcamp"
 ---
 
 ```{r setup, include=FALSE}
